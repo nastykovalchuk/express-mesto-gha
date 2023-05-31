@@ -13,12 +13,12 @@ const resStatus = {
   NOT_FOUND: {
     CODE: 404,
     USER_MESSAGE: 'User not found',
-    CARD_MESSAGE: 'Card not found',
     PAGE_MESSAGE: 'Page not found',
   },
   INVALID_DATA: {
     CODE: 400,
     MESSAGE: 'Invalid data',
+    CARD_MESSAGE: 'Card not found',
   },
   INTERNAL: {
     CODE: 500,
