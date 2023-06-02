@@ -32,7 +32,7 @@ module.exports.getUser = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-  User.create({ name: req.body.name, about: req.body.about, avatar: req.body.avatar})
+  User.create({ name: req.body.name, about: req.body.about, avatar: req.body.avatar })
     .then((user) => res.status(CREATED.CODE).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -44,7 +44,11 @@ module.exports.createUser = (req, res) => {
 };
 
 module.exports.patchProfile = (req, res) => {
-  User.findByIdAndUpdate(req.user._id, { name: req.body.name, about: req.body.about }, { new: true, runValidators: true })
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name: req.body.name, about: req.body.about },
+    { new: true, runValidators: true },
+  )
     .then((user) => {
       if (!user) {
         return res.status(NOT_FOUND.CODE)
@@ -62,7 +66,11 @@ module.exports.patchProfile = (req, res) => {
 };
 
 module.exports.patchAvatar = (req, res) => {
-  User.findByIdAndUpdate(req.user._id, { avatar: req.body.avatar }, { new: true, runValidators: true })
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar: req.body.avatar },
+    { new: true, runValidators: true },
+  )
     .then((user) => {
       if (!user) {
         return res.status(NOT_FOUND.CODE)

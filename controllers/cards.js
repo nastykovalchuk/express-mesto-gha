@@ -15,7 +15,7 @@ module.exports.getCards = (req, res) => {
 };
 
 module.exports.createCard = (req, res) => {
-  Card.create({name: req.body.name, link: req.body.link, owner: req.user._id})
+  Card.create({ name: req.body.name, link: req.body.link, owner: req.user._id })
     .then((card) => res.status(CREATED.CODE).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -42,8 +42,7 @@ module.exports.deleteCard = (req, res) => {
 };
 
 module.exports.likeCard = (req, res) => {
-  console.log(res)
-  Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
+  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
     .then((card) => {
       if (!card) {
         return res.status(NOT_FOUND.CODE)
