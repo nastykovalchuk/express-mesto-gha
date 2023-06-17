@@ -1,6 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const resStatus = require('./utils/resStatus');
+const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
+const { errors } = require('celebrate');
+const limiter = require('./middlewares/rateLimit');
+const NotFoundError = require('./errors/NotFoundError');
+const errorHandler = require('./middlewares/errorHandler');
+const auth = require('./middlewares/auth');
+
+require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
 
@@ -12,26 +20,28 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
 
 const app = express();
 
+app.use(limiter);
+app.use(helmet());
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '647799c146970e6de7f9613f',
-  };
-
-  next();
-});
+app.use(cookieParser());
 
 const userRoutes = require('./routes/users');
 const cardRoutes = require('./routes/cards');
+const routeAuth = require('./routes/auth');
+
+app.use('/', routeAuth);
+
+app.use(auth);
 
 app.use('/users', userRoutes);
 app.use('/cards', cardRoutes);
 
-app.use((req, res) => {
-  res.status(resStatus.NOT_FOUND.CODE).send({ message: resStatus.NOT_FOUND.PAGE_MESSAGE });
-});
+app.use((req, res, next) => next(new NotFoundError('Page Not Found')));
+app.use(errors());
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server start on port ${PORT}`);
