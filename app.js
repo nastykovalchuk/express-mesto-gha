@@ -7,12 +7,11 @@ const limiter = require('./middlewares/rateLimit');
 const NotFoundError = require('./errors/NotFoundError');
 const errorHandler = require('./middlewares/errorHandler');
 const auth = require('./middlewares/auth');
+const { PORT, DB_URL } = require('./configs/main');
 
 require('dotenv').config();
 
-const { PORT = 3000 } = process.env;
-
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
+mongoose.connect(DB_URL, {
   useNewUrlParser: true,
 })
   .then(() => console.log('Database connected.'))
